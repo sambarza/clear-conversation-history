@@ -46,23 +46,6 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
 
       if original_user_message_text[:2] == ".r":
       
-         # Answer to resend has been specified?
-         if len(original_user_message_text.split(" ")) > 1:
-            # Answer to resend has been specified
-            question_to_resend = int(original_user_message_text.split(" ")[1])
-         else:
-            # Answer to resend has not been specified, resend the last answer
-            question_to_resend = int(len(cat.working_memory["history"]) - 1)
-
-         # Keep the history up to the answer to resend
-         turns_to_keep = question_to_resend - 1
-
-         # Keep the history up to the answer to resend
-         cat.working_memory.keep_up_to_turn(turns_to_keep)
-
-         # The question has been already replaced in before_cat_reads_message hook
-         ##cat.working_memory["user_message_json"]["text"] = question
-
          # Remove the original message
          del cat.working_memory["user_message_json"]["original_text"]
 
@@ -118,9 +101,16 @@ def before_cat_reads_message(user_message_json, cat: CheshireCat):
       # Answer to resend has not been specified, resend the last answer
       question_to_resend = int(len(cat.working_memory["history"]) - 1)
 
+   # Keep the history up to the answer to resend
+   turns_to_keep = question_to_resend - 1
+
    # Get the question
    question = cat.working_memory["history"][question_to_resend - 1]["message"]
-   
+
+   # Keep the history up to the answer to resend
+   cat.working_memory.keep_up_to_turn(turns_to_keep)
+
+   # Replace the question   
    user_message_json["text"] = question
 
    return user_message_json
