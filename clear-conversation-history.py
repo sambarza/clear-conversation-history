@@ -54,14 +54,14 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
    if cat.working_memory["user_message_json"]["text"] == ".":
 
       commands = """
-      Commands:
+      Dot Commands:
       [.p]     - Print Chat history
       [.k nnn] - Keep Chat History up to nnn turns
       [.r]     - Resend the last question
       [.r nnn] - Resend a specific question
       [.cc]    - Clear Chat history
       [.rl]    - Remove Last turn
-      [.lp]    - Last Prompt
+      [.lp]    - Print Last Sent Prompt
       """
 
       return {
@@ -70,6 +70,11 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
    
 
 def formatted_chat_history(cat):
+
+   if len(cat.working_memory.history) == 0:
+      return {
+            "output": "Chat history is empty"
+      }
 
    history = ""
 
