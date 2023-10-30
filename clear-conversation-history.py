@@ -36,6 +36,11 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
    if cat.working_memory["user_message_json"]["text"][:2] == ".k":
       turns_to_keep = int(cat.working_memory["user_message_json"]["text"].split(" ")[1])
 
+      if turns_to_keep % 2 != 0:
+         return {
+               "output": f"{turns_to_keep} is HUMAN turn, specify an AI turn"
+         }
+      
       cat.working_memory.keep_up_to_turn(turns_to_keep)
 
       return formatted_chat_history(cat)
@@ -60,6 +65,8 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
       [.r]     - Resend the last question
       [.r nnn] - Resend a specific question
       [.cc]    - Clear Chat history
+      [.s]     - Save Chat history (not implemented)
+      [.l]     - Load Chat history (not implemented)
       [.rl]    - Remove Last turn
       [.lp]    - Print Last Sent Prompt
       """
