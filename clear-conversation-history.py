@@ -63,7 +63,7 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
       [.p]     - Print Chat history
       [.k nnn] - Keep Chat History up to nnn turns
       [.r]     - Resend the last question
-      [.r nnn] - Resend a specific question
+      [.r nnn] - Resend a specific HUMAN question
       [.cc]    - Clear Chat history
       [.s]     - Save Chat history (not implemented)
       [.l]     - Load Chat history (not implemented)
@@ -108,16 +108,16 @@ def before_cat_reads_message(user_message_json, cat: CheshireCat):
    # Answer to resend has been specified?
    if len(user_message_json["text"].split(" ")) > 1:
       # Answer to resend has been specified
-      question_to_resend = int(user_message_json["text"].split(" ")[1])
+      turn_to_resend = int(user_message_json["text"].split(" ")[1])
    else:
       # Answer to resend has not been specified, resend the last answer
-      question_to_resend = int(len(cat.working_memory["history"]) - 1)
+      turn_to_resend = int(len(cat.working_memory["history"]) - 1)
 
    # Keep the history up to the answer to resend
-   turns_to_keep = question_to_resend - 1
+   turns_to_keep = turn_to_resend - 1
 
    # Get the question
-   question = cat.working_memory["history"][question_to_resend - 1]["message"]
+   question = cat.working_memory["history"][turn_to_resend - 1]["message"]
 
    # Keep the history up to the answer to resend
    cat.working_memory.keep_up_to_turn(turns_to_keep)
