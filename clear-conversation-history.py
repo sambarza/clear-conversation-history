@@ -14,8 +14,8 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
 
    if cat.working_memory["user_message_json"]["text"] == ".cc":
 
-      cat.working_memory.episodic_memory.clear()
-      cat.working_memory.history.clear()
+      cat.working_memory.episodic_memories.clear()
+      cat.working_memory["history"].clear()
 
       return {
             "output": "Ok I have forgotten everything"
@@ -78,7 +78,7 @@ def agent_fast_reply(fast_reply, cat: CheshireCat):
 
 def formatted_chat_history(cat):
 
-   if len(cat.working_memory.history) == 0:
+   if len(cat.working_memory["history"]) == 0:
       return {
             "output": "Chat history is empty"
       }
@@ -86,7 +86,7 @@ def formatted_chat_history(cat):
    history = ""
 
    turn_number = 0
-   for turn in cat.working_memory.history:
+   for turn in cat.working_memory["history"]:
       turn_number += 1
 
       history += f"\n *{str(turn_number).zfill(3)}* - {turn['who']}: {turn['message']}"
@@ -97,6 +97,10 @@ def formatted_chat_history(cat):
 
 @hook
 def before_cat_reads_message(user_message_json, cat: CheshireCat):
+
+   # Remove dot commands in history
+   if cat.working_memory["history"][-2]["message"][0] == ".":
+      cat.working_memory["history"] = cat.working_memory["history"][:-2]
 
    # Exit if not resend command
    if not user_message_json["text"][:2] == ".r":
